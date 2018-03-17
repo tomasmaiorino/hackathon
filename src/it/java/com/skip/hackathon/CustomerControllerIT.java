@@ -170,7 +170,7 @@ public class CustomerControllerIT extends BaseTestIT {
 	}
 
 	@Test
-	public void save_ValidResourceGiven_ShouldSaveClient() {
+	public void save_ValidResourceGiven_ShouldSaveCustomer() {
 		// Set Up
 		CustomerResource resource = CustomerResource.build().assertFields();
 

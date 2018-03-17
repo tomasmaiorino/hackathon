@@ -118,7 +118,7 @@ mvn spring-boot:run
 
 ###### Service's call examples:
 
-#### Create a client.
+#### Create a customer.
 ```$
 curl -i -H "Contencurl -i -H "Content-Type:application/json" -H "Accept:application/json" -X POST http://localhost:8080/api/v1/customers -d "{\"password\": \"123123\",\"email\": \"user@domain.com\",\"name\": \"Jean Gray\",\"status\":\"ACTIVE\"}"t-Type:application/json"  -H "AT: cecadbd7-e07c-48b2-b11d-038f7aaab4f6" -H "Accept:application/json" -X POST http://localhost:8080/api/v1/cards-type -d "{\"name\": \"Kicthen\",\"imgUrl\": \"assets/img/cards/kitchen/kitchen.jpg\",\"status\":\"ACTIVE\"}"
 ```

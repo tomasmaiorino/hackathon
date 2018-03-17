@@ -14,14 +14,14 @@ public class BaseTestIT {
 	protected static final String MESSAGE_CHECK_KEY = "[0].message";
 	protected static final String MESSAGE_FIELD_KEY = "[0].field";
 
-	private String clientServiceKey;
+	private String itSecurityPass;
 
 	public static final String ADMIN_TOKEN_HEADER = "AT";
 
 	public Map<String, String> getHeader() {
 		if (header == null) {
 			header = new HashMap<>();
-			header.put(ADMIN_TOKEN_HEADER, clientServiceKey);
+			header.put(ADMIN_TOKEN_HEADER, itSecurityPass);
 		}
 		return header;
 	}
