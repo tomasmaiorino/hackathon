@@ -1,16 +1,15 @@
 package com.skip.hackathon.it.resource;
 
-import static com.jayway.restassured.RestAssured.given;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.skip.hackathon.CustomerControllerIT;
+import com.skip.hackathon.util.CustomerTestBuilder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.skip.hackathon.CustomerControllerIT;
-import com.skip.hackathon.util.CustomerTestBuilder;
-
-import lombok.Getter;
-import lombok.Setter;
+import static com.jayway.restassured.RestAssured.given;
 
 public class CustomerResource {
 
@@ -44,6 +43,10 @@ public class CustomerResource {
 	}
 
 	@Getter
+	@Setter
+	private Integer id;
+
+	@Getter
 	private String name;
 
 	@Getter
@@ -57,8 +60,8 @@ public class CustomerResource {
 
 	public CustomerResource create() {
 		assertFields();
-		return given().headers(getHeaders()).contentType("application/json").body(this).when()
-				.post(CustomerControllerIT.CUSTOMERS_END_POINT).as(CustomerResource.class);
+		return given().contentType("application/json").body(this).when()
+				.post(CustomerControllerIT.POST_CUSTOMERS_END_POINT).as(CustomerResource.class);
 	}
 
 	public CustomerResource headers(Map<String, String> headers) {

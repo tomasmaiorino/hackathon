@@ -2,6 +2,8 @@ package com.skip.parser;
 
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -13,13 +15,15 @@ import com.skip.hackathon.resource.CustomerResource;
 @Component
 public class CustomerParser implements IParser<CustomerResource, Customer> {
 
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+
 	@Override
 	public Customer toModel(CustomerResource resource) {
 		Assert.notNull(resource, "The resource must not be null!");
 		Customer customer = Customer.CustomerBuilder.Customer(resource.getName(), resource.getEmail(),
-				// bCryptPasswordEncoder.encode(resource.getPassword()),
-				// CustomerStatus.valueOf(resource.getStatus()))
-				resource.getPassword(), CustomerStatus.valueOf(resource.getStatus())).build();
+				bCryptPasswordEncoder.encode(resource.getPassword()), CustomerStatus.valueOf(resource.getStatus()))
+				.build();
 
 		Role role = Role.RoleBuilder.Role(Role.Roles.USER).build();
 		customer.addRole(role);
@@ -40,7 +44,6 @@ public class CustomerParser implements IParser<CustomerResource, Customer> {
 
 	@Override
 	public Set<CustomerResource> toResources(Set<Customer> models) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

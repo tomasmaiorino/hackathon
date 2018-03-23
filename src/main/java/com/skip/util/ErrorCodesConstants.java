@@ -22,4 +22,15 @@ public interface ErrorCodesConstants {
 
 	public static final String INVALID_CUSTOMER_STATUS = "invalidCustomerStatus";
 
+	// LOGIN
+	public static final String REQUIRED_LOGIN_EMAIL = "requiredLoginEmail";
+
+	public static final String INVALID_LOGIN_EMAIL = "invalidLoginEmail";
+
+	public static final String REQUIRED_LOGIN_PASSWORD = "requiredLoginPassword";
+
+	public static final String INVALID_LOGIN_PASSWORD_SIZE = "invalidLoginPasswordSize";
+
+
+
 }

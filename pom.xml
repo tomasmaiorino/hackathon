@@ -14,7 +14,8 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.11.BUILD-SNAPSHOT</version>
+		<version>1.5.4.RELEASE</version>
+		<!-- <version>1.5.11.BUILD-SNAPSHOT</version>-->
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -58,11 +59,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.4</version>
-		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.jayway.restassured/rest-assured -->
 		<dependency>
@@ -129,11 +125,13 @@
 			<version>0.7.0</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.4</version>
+			<version>3.7</version>
 		</dependency>
+
 
 	</dependencies>
 

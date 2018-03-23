@@ -6,10 +6,14 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
-import org.junit.FixMethodOrder;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.skip.hackathon.model.Customer;
 import com.skip.hackathon.model.Customer.CustomerStatus;
@@ -17,11 +21,20 @@ import com.skip.hackathon.resource.CustomerResource;
 import com.skip.hackathon.util.CustomerTestBuilder;
 import com.skip.parser.CustomerParser;
 
-@FixMethodOrder(MethodSorters.JVM)
 public class CustomerParserTest {
 
-	private CustomerParser parser = new CustomerParser();
 
+	@InjectMocks
+	private CustomerParser parser;
+	
+	@Mock
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+	}
+	
 	@Test(expected = IllegalArgumentException.class)
 	public void toModel_NullResourceGiven_ShouldThrowException() {
 		// Set up
@@ -35,6 +48,10 @@ public class CustomerParserTest {
 	public void toModel_ValidResourceGiven_ShouldCreateCustomerModel() {
 		// Set up
 		CustomerResource resource = CustomerTestBuilder.buildResource();
+		String newPass = CustomerTestBuilder.getPassword();
+		
+		//Expectations
+		when(bCryptPasswordEncoder.encode(resource.getPassword())).thenReturn(newPass);
 
 		// Do test
 		Customer result = parser.toModel(resource);
@@ -42,7 +59,7 @@ public class CustomerParserTest {
 		// Assertions
 		assertNotNull(result);
 		assertThat(result, allOf(hasProperty("id", nullValue()), hasProperty("name", is(resource.getName())),
-				hasProperty("email", is(resource.getEmail())), hasProperty("password", is(resource.getPassword())),
+				hasProperty("email", is(resource.getEmail())), hasProperty("password", is(newPass)),
 				hasProperty("status", is(CustomerStatus.valueOf(resource.getStatus())))));
 
 	}

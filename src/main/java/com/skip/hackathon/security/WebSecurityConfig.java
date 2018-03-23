@@ -1,48 +1,50 @@
 package com.skip.hackathon.security;
 
-import javax.sql.DataSource;
+import static com.skip.hackathon.security.SecurityConstants.CREATE_CUSTOMER_URL;
+import static com.skip.hackathon.security.SecurityConstants.SIGN_UP_URL;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import sun.tools.jar.resources.jar_es;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	DataSource dataSource;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
-	@Override
-	protected void configure(HttpSecurity httpSecurity) throws Exception {
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-		httpSecurity.csrf().disable().authorizeRequests().antMatchers("/").permitAll()
-				.antMatchers(HttpMethod.POST, "/api/v1/customers").permitAll().and()
-				// filtra requisições de login
-				.addFilterBefore(new JWTLoginFilter("/api/v1/customers/auth", authenticationManager()),
-						UsernamePasswordAuthenticationFilter.class)
+    @Bean
+    public JWTAuthorizationFilter jwtAuthorizationFilter() {
+        return new JWTAuthorizationFilter();
+    }
 
-				// filtra outras requisições para verificar a presença do JWT no header
-				.addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-	}
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception { // cria uma conta default
-		auth.inMemoryAuthentication().withUser("admin").password("password").roles("ADMIN");
-		/*
-		 * auth.jdbcAuthentication().dataSource(dataSource) .usersByUsernameQuery(
-		 * "select email as username,password, status as enable  from customer where email=?"
-		 * )
-		 * 
-		 * .authoritiesByUsernameQuery(
-		 * "select user.user_email as username, user.password as password, user.user_status as enable from user where user.user_login=?"
-		 * );
-		 */
-	}
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+                .addFilterBefore(jwtAuthorizationFilter(), BasicAuthenticationFilter.class)
+                .authorizeRequests().antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
+                .antMatchers(HttpMethod.POST, CREATE_CUSTOMER_URL).permitAll().anyRequest().authenticated().and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    }
+
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+    }
 
 }
